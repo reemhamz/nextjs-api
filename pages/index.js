@@ -11,6 +11,7 @@ export default function Home({ userList }) {
   const [pagination, setPagination] = useState(true);
   const [merge, setMerge] = useState(false);
 
+  // function to merge objects based on ID
   const groupedItems = userList.reduce((acc, curr) => {
     if (acc[curr.userId]) {
       acc[curr.userId] += curr.body;
@@ -27,7 +28,7 @@ export default function Home({ userList }) {
     };
   });
 
-  // Next page button for pagination
+  // Button functions
   const nextPage = () => {
     setOffset(offset + 5);
   };
@@ -49,31 +50,35 @@ export default function Home({ userList }) {
   };
 
   const unMerge = () => {
-    setMerge(false)
-  }
+    setMerge(false);
+  };
 
   // slice array method
   const slice = userList.slice(offset, offset + postsPerPage);
 
-  useEffect(() => {
-    setPageCount(Math.ceil(userList.length / postsPerPage));
-  }, [userList, postsPerPage]);
-
   // styled-components stuff
   const Body = styled.div`
     // background-color: red;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
   `;
 
   const Main = styled.main`
     width: 100vw;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
+  `;
+
+  const Header = styled.h1`
+    color: tomato;
   `;
 
   const List = styled.ul`
     display: flex;
-    // flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     margin: 0 auto;
@@ -83,19 +88,16 @@ export default function Home({ userList }) {
   `;
 
   const ListItems = styled.li`
-    background: lightpink;
-    border: 2px dashed tomato;
-    border-radius: 4px;
+    border: 4px dashed tomato;
+    align-items: center;
+    justify-content: center;
     padding: 10px;
-    text-align: center;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     height: 100%;
-    max-width: 100%;
-    justify-items: center;
-    align-items: center;
-    margin: 30px 0;
+    margin: 30px;
+    min-height: 400px;
     width: 300px;
   `;
 
@@ -104,16 +106,40 @@ export default function Home({ userList }) {
     justify-content: space-evenly;
   `;
 
+  const ButtonContainer = styled.div`
+    display: block;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
+
   const Button = styled.button`
     padding: 10px;
     font-size: 15px;
-    background: lightblue;
-    color: teal;
+    color: tomato;
     border: none;
-    border: 2px solid navy;
+    border: 2px solid tomato;
     margin: 10px;
     width: 210px;
     cursor: pointer;
+    &:hover {
+      background: tomato;
+      color: white;
+    }
+  `;
+
+  const Footer = styled.footer`
+    // align-self: flex-end;
+    // margin-bottom: auto;
+    margin-top: auto;
+    background: tomato;
+    display: block;
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 20px;
   `;
 
   // Actual code
@@ -125,7 +151,7 @@ export default function Home({ userList }) {
       </Head>
 
       <Main>
-        <h1 className={styles.title}>Howdy, Health Espresso ☕️</h1>
+        <Header className={styles.title}>Howdy, Health Espresso ☕️</Header>
 
         {pagination ? (
           <List>
@@ -142,16 +168,17 @@ export default function Home({ userList }) {
                 </div>
               </ListItems>
             ))}
-            <Button onClick={showFullList}>Show full results</Button>
-            <div>
-              {offset > 0 && (
-                <Button onClick={previousPage}>Previous page</Button>
-              )}
-              <Button onClick={nextPage}>Next page</Button>
-            </div>
+            <ButtonContainer>
+              <Button onClick={showFullList}>Show full results</Button>
+              <div>
+                {offset > 0 && (
+                  <Button onClick={previousPage}>Previous page</Button>
+                )}
+                <Button onClick={nextPage}>Next page</Button>
+              </div>
+            </ButtonContainer>
           </List>
-        ) : (
-            merge ? (
+        ) : merge ? (
           <List>
             {groupedArray.map((e, index) => (
               <ListItems key={index}>
@@ -166,9 +193,11 @@ export default function Home({ userList }) {
                 </div>
               </ListItems>
             ))}
-            <Button onClick={unMerge}>Unmerge</Button>
+            <ButtonContainer>
+              <Button onClick={unMerge}>Unmerge</Button>
+            </ButtonContainer>
           </List>
-        ) :
+        ) : (
           <List>
             {userList.map((e, index) => (
               <ListItems key={index}>
@@ -188,19 +217,19 @@ export default function Home({ userList }) {
                 </div>
               </ListItems>
             ))}
-            <div>
+            <ButtonContainer>
               <Button onClick={showMerged}>Merge by User ID</Button>
               <Button onClick={showPagination}>Show pagination</Button>
-            </div>
+            </ButtonContainer>
           </List>
         )}
       </Main>
 
-      <footer className={styles.footer}>
+      <Footer>
         <a href="https://reemify.dev" target="_blank" rel="noopener noreferrer">
           Challenge accepted by Reem 🤘🏼
         </a>
-      </footer>
+      </Footer>
     </Body>
   );
 }
